@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Super Binder</title>
+</head>
+<body>
+	<form id="test-form" action="/some/fancy/url" method="POST">
+		<input class="binder" type="text" data-bind="id" disabled="true" hidden="true"/>
+		<input class="binder" type="text" data-bind="username" disabled="true" />
+		<input class="binder" type="text" data-bind="firstName"/>
+		<input class="binder" type="text" data-bind="lastName"/>
+		<textarea class="binder" type="text" data-bind="address.addressLine1"></textarea>
+		<textarea class="binder" type="text" data-bind="address.addressLine2"></textarea>
+		<select class="binder" type="option" data-bind="gender">
+			<option>Select Gender</option>
+			<option value="MALE">Male</option>
+			<option value="FEMALE">Female</option>
+		</select>
+		<input type="submit"/>
+	</form>
+</body>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.js"></script>
+<script type="text/javascript" src="superbinder.js"></script>
+<script type="text/javascript">
+	var data = {"id":"56f1d4ba44ae85152fd621d6","createdBy":null,"createdOn":1458689464159,"lastSaved":1458737965384,"firstName":"Boob","lastName":"Boobies","otherNames":null,"dob":"2013-03-12","gender":"FEMALE","address":{"addressLine1":"34 NeverEver Road","addressLine2":"Never BackApt","city":"NeverTown","zip":null,"state":null,"country":"NeverLand"},"contacts":[{"type":"WORK","value":"567-7854,567-6537"},{"type":"MOBILE","value":"760-9975,786-9843,338-9846"}],"username":"bboobies","email":"bboobies@vmail.com","employeeNumber":"647380392","jobTitle":"Software Developer","company":"SunnyGroup","status":"ACTIVE"};
+	var testForm = new SuperBinder('#test-form');
+	testForm.bind(data);
+
+</script>
+</html>

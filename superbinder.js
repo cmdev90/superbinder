@@ -1,7 +1,10 @@
 (function (window, $){
-	var SuperBinder = function (formId){
+	
+    var binders = {};
+    var mappers = {};
+    
+    var SuperBinder = function (formId){
 		this.form = formId;
-
 		this.success = function (response){
 			console.log(response);
 		};
@@ -13,31 +16,46 @@
 		setSubmitAction(this);
 	};
 
+    var defineBinder = SuperBinder.prototype.defineBinder = function (bindType, fn){
+        if (typeof fn === 'function')
+            return binders[bindType] = fn;
+    };
+
+    var defineMapper = SuperBinder.prototype.defineMapper = function (mapType, fn){
+        if (typeof fn === 'function')
+            return mappers[mapType] = fn;
+    };
+
+    defineBinder('text', function (element, data, bind) {
+        element.val(index(data, bind));
+    });
+
+    defineBinder('option', function (element, data, bind) {
+        element.val(index(data, bind));
+    });
+
+    defineBinder('radio', function (element, data, bind) {
+        if (index(data, bind))
+            return element.attr('checked', true);
+    });
+
 	SuperBinder.prototype.bind = function (data) {
-		var binders = $(this.form).find('.binder');
+		var elements = $(this.form).find('.binder');
 
-		$.each(binders, function(){
-			var bindWith = $(this).attr('data-bind'),
-				bindType = $(this).attr('type') ? $(this).attr('type').toLowerCase(): null;
+		$.each(elements, function(){
+			var bind = $(this).attr('data-bind'),
+				type = $(this).attr('type') ? $(this).attr('type').toLowerCase(): null;
 
-			if (bindWith) {
-				switch (bindType) {
-					case 'text':
-						$(this).val(index(data, bindWith));
-						break;
-					case 'option':
-						$(this).val(index(data, bindWith));
-						break;
-					case 'radio':
-						if ($(this).val() === index(data, bindWith))
-							$(this).attr("checked", true);
-						break;
-					default:
-						$(this).val(index(data, bindWith));
-						break;
-				};
-			}
-		});
+			if (!bind){
+                console.log('WARN: The data-bind attribute was not defined for an element of the class `bind`.');
+            }   
+            else if (!binders[type] && typeof(binders[type]) !== 'function') {
+                console.log('WARN: A sutiable binder was not found for the type `' + type + '`');
+            }
+            else {
+                binders[type]($(this), data, bind);
+            }
+    	});
 	};
 
 	SuperBinder.prototype.setSuccess = function (fn) {
